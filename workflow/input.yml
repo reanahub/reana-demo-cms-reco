@@ -1,0 +1,7 @@
+repo_link: 'git://github.com/cms-legacydata-validation/RAWToAODValidation.git'
+repo_name: 'RAWToAODValidation'
+year: 2011
+dataset_name: 'DoubleElectron'
+reco_tool:
+  class: File
+  path: reco_cmsdriver2011.py
