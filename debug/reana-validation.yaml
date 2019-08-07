@@ -1,0 +1,33 @@
+version: 0.6.0
+
+inputs:
+  files:
+    - demoanalyzer_cfg.py
+    - reco_RAW2DIGI_L1Reco_RECO_USER.root
+    - BuildFile.xml
+    - src/PhysicsObjectsHistos.cc
+
+workflow:
+  type: serial
+  specification:
+    steps:
+      - environment: 'cmsopendata/cmssw_5_3_32'
+        commands:
+        - >
+            source /opt/cms/cmsset_default.sh
+            && scramv1 project CMSSW CMSSW_5_3_32
+            && cd CMSSW_5_3_32/src
+            && eval `scramv1 runtime -sh`
+            && mkdir Reconstruction && cd Reconstruction
+            && mkdir Validation && cd Validation
+            && scp ../../../../demoanalyzer_cfg.py .
+            && scp ../../../reco_RAW2DIGI_L1Reco_RECO_USER.root .
+            && mkdir src
+            && scp ../../../../src/PhysicsObjectsHistos.cc ./src
+            && scp ../../../../BuildFile.xml .
+            && scram b
+            && cmsRun demoanalyzer_cfg.py
+
+outputs:
+  files:
+    - CMSSW_5_3_32/src/Reconstruction/Validation/histodemo.root

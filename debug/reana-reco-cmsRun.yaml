@@ -1,0 +1,28 @@
+version: 0.6.0
+
+workflow:
+  type: serial
+  specification:
+    steps:
+      - environment: 'cmsopendata/cmssw_5_3_32'
+        compute_backend: htcondorcern
+        commands:
+        - >
+            source /opt/cms/cmsset_default.sh
+            && scramv1 project CMSSW CMSSW_5_3_32
+            && cd CMSSW_5_3_32/src
+            && eval `scramv1 runtime -sh`
+            && mkdir Reconstruction && cd Reconstruction
+            && mkdir Validation && cd Validation
+            && cmsDriver.py reco -s RAW2DIGI,L1Reco,RECO,USER:EventFilter/HcalRawToDigi/hcallaserhbhehffilter2012_cff.hcallLaser2012Filter --data --filein='root://eospublic.cern.ch//eos/opendata/cms/Run2011A/DoubleElectron/RAW/v1/000/160/431/080D15C9-FF4D-E011-9484-0030487C7828.root' --conditions FT_53_LV5_AN1::All --eventcontent AOD --no_exec --python reco_cmsdriver.py
+            && sed -i 's/from Configuration.AlCa.GlobalTag import GlobalTag/process.GlobalTag.connect = cms.string("sqlite_file:\/cvmfs\/cms-opendata-conddb.cern.ch\/FT_53_LV5_AN1_RUNA.db")/g' reco_cmsdriver.py
+            && sed -i 's/# Other statements/from Configuration.AlCa.GlobalTag import GlobalTag/g' reco_cmsdriver.py
+            && ln -sf /cvmfs/cms-opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA FT_53_LV5_AN1
+            && ln -sf /cvmfs/cms-opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA.db FT_53_LV5_AN1_RUNA.db
+            && ls -l
+            && ls -l /cvmfs/
+            && cmsRun reco_cmsdriver.py
+
+outputs:
+  files:
+    - reco_RAW2DIGI_L1Reco_RECO_USER.root

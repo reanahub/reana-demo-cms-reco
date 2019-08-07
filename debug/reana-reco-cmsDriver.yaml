@@ -1,0 +1,18 @@
+version: 0.6.0
+
+workflow:
+  type: serial
+  specification:
+    steps:
+      - environment: 'cmsopendata/cmssw_5_3_32'
+        commands:
+        - >
+            source /opt/cms/cmsset_default.sh
+            && scramv1 project CMSSW CMSSW_5_3_32
+            && cd CMSSW_5_3_32/src
+            && eval `scramv1 runtime -sh`
+            && cmsDriver.py reco -s RAW2DIGI,L1Reco,RECO,USER:EventFilter/HcalRawToDigi/hcallaserhbhehffilter2012_cff.hcallLaser2012Filter --data --conditions FT_R_53_LV5::All --eventcontent AOD --customise Configuration/DataProcessing/RecoTLR.customisePrompt --no_exec --python reco_cmsdriver.py
+
+outputs:
+  files:
+    - reco_cmsdriver.py

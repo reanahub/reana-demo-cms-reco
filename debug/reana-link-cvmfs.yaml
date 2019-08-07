@@ -1,0 +1,11 @@
+# Note: for this one requires the CVMFS mount.
+version: 0.6.0
+workflow:
+ type: serial
+  specification:
+    steps:
+      - environment: 'python:3.7-slim'
+        commands:
+          - ls -l /cvmfs > z1.txt
+          - find /cvmfs/cms-opendata-conddb.cern.ch > z2.txt
+
