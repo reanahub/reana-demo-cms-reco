@@ -4,4 +4,4 @@ year: 2011
 dataset_name: 'DoubleElectron'
 reco_tool:
   class: File
-  path: reco_cmsdriver2011.py
+  path: reco_cmsdriver2010.py
