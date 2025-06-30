@@ -63,7 +63,7 @@ def get_config_from_json(file_selection, config_file):
 
 def get_global_tag(data):
     """Get the global tag for the CMS cond db."""
-    global_tag = jq.jq(".metadata.system_details.global_tag").transform(data)
+    global_tag = jq.jq(".system_details.global_tag").transform(data)
 
     # The global tag value contains sometimes the"::All" suffix
     if "::All" in global_tag:
@@ -80,7 +80,7 @@ def get_global_tag(data):
 
 def get_cms_release(data):
     """Get the CMS SW release version."""
-    release = jq.jq(".metadata.system_details.release").transform(data)
+    release = jq.jq(".system_details.release").transform(data)
 
     # Sometimes the release value begins wrongly with a white space
     if " " in release:
@@ -117,14 +117,15 @@ def remove_folder(mydir):
 def get_index_file_name(data, recid, file_format):
     """Get the dataset specific index file name."""
     if file_format == "json":
-        index_file = jq.jq(".metadata._files").transform(data)[0]["key"]
+        index_file = jq.jq("._file_indices").transform(data)[0]["key"]
     elif file_format == "txt":
-        index_file = jq.jq(".metadata._files").transform(data)[1]["key"]
+        index_file = jq.jq("._file_indices").transform(data)[1]["key"]
     else:
         index_file = None
 
-    url = "http://opendata.cern.ch/record/{0}//files/{1}" \
+    url = "http://opendata.cern.ch/record/{0}//file_index/{1}" \
         .format(recid, index_file)
+    print(f"Index file URL: {url}")
     return url
 
 
@@ -156,7 +157,7 @@ def choose_dataset_from_file(file_selection, local_file_name):
         logging.debug("Fetching .json format.")
 
         with open("{0}/{1}".format(os.getcwd(), local_file_name)) as file:
-            index_data = json.load(file)
+            index_data = json.load(file)["files"]
             logging.debug("File selection is: {}".format(file_selection))
 
             if file_selection == "first":
@@ -184,17 +185,17 @@ def choose_dataset_from_file(file_selection, local_file_name):
 
 def get_recid(data):
     """Get the record id."""
-    return jq.jq(".id").transform(data)
+    return jq.jq(".recid").transform(data)
 
 
 def get_title(data):
     """Get the data set title."""
-    return jq.jq(".metadata.title").transform(data)
+    return jq.jq(".title").transform(data)
 
 
 def get_year(data):
     """Get creation year for the data set."""
-    return jq.jq(".metadata.date_created").transform(data)[0]
+    return jq.jq(".date_created").transform(data)[0]
 
 
 def get_name_from_title(title):
@@ -213,7 +214,7 @@ def load_config_from_cod(recid, config_file):
     _cod_client = ""
     _get_config_cmd = ""
     sp.call(f"cernopendata-client "
-            f"get-record --recid {recid} | tee {config_file}",
+            f"get-metadata --recid {recid} | tee {config_file}",
             shell=True)
 
 
