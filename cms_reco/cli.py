@@ -16,7 +16,6 @@ import sys
 import click
 from cookiecutter.exceptions import OutputDirExistsException
 from cookiecutter.main import cookiecutter
-
 from .utils import (get_config_from_json, get_template, load_config_from_cod,
                     valid_compute_backends, valid_file_selection,
                     valid_run_years, valid_workflow_engines)
@@ -79,7 +78,6 @@ def create_workflow(config_file, compute_backend, dataset, directory, files,
         format='[%(levelname)s] %(message)s',
         stream=sys.stderr,
         level=logging.INFO if quiet else logging.DEBUG)
-
     # Set COD configs
     config = get_config_from_json(config_file=config_file, file_selection=files)
 
