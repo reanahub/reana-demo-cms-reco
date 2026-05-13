@@ -16,7 +16,7 @@ readme = open("README.md").read()
 history = open("CHANGELOG.md").read()
 
 tests_require = [
-    "pytest-reana>=0.9.1,<0.10.0",
+    "pytest>=7.0.0,<9.0.0",
 ]
 
 extras_require = {
